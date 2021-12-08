@@ -15,7 +15,7 @@ export default function MoviePlayer({url}) {
             uri: url
           }}
           useNativeControls
-          resizeMode="contain"
+          resizeMode="cover"
           isLooping
           onPlaybackStatusUpdate={status => setStatus(() => status)}
         />
