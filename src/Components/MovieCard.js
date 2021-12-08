@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { View, Text, Image, Touchable, TouchableOpacity,StyleSheet } from 'react-native'
 
-export default function MovieCard({navigator,item}) {
+export default function MovieCard({navigator,url,title,id,adjaraId}) {
     return (
-        <TouchableOpacity onPress={()=>navigator.navigate("MovieDetails",{Movie:item.id})} style={styles.container}>
+        <TouchableOpacity onPress={()=>navigator.navigate("MovieDetails",{movieId:{id,adjaraId}})} style={styles.container}>
             <Image 
-            source={{uri:item.url}} 
+            source={{uri:url}} 
             style={styles.image}/>
-            <Text style={styles.text}>{"Movie Title Here"}</Text>
+            <Text style={styles.text}>{title}</Text>
         </TouchableOpacity>
     )
 

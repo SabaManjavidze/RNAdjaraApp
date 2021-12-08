@@ -3,7 +3,16 @@ import { View, Text, Image, FlatList, ScrollView, StyleSheet } from 'react-nativ
 import MovieCard from '../../../Components/MovieCard'
 export default function MovieList({navigation,title,data}) {
     const renderItem = ({item}) =>{
-        return(<MovieCard navigator={navigation} item={item}/>)
+        const img_url = item.covers.data[1920]
+        return(
+            <MovieCard 
+                navigator={navigation} 
+                title={item.secondaryName}
+                url={img_url!=""?img_url:item.posters.data[240]}
+                id={item.id}
+                adjaraId={item.adjaraId}
+                />
+            )
     }
     return (
         <View style={styles.container}>

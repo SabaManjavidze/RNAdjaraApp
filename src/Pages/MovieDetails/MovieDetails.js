@@ -1,53 +1,61 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, FlatList, ScrollView, StyleSheet, Button, Modal } from 'react-native'
+import { View, Text, Image,ScrollView,Dimensions, StyleSheet, Button, Modal } from 'react-native'
 import { fetchMovieDetails,fetchMovieFiles } from '../../../Services/services'
 import MoviePlayer from '../../Components/MoviePlayer'
 
+const dimensions = Dimensions.get("screen")
+
 export default function MovieDetails({route,navigation}) {
-    const movieId = route.params.Movie
+    const {adjaraId,movieId} = route.params.movieId
     const [fileObj, setFileObj] = useState()
     const [movie, setMovie] = useState({})
-    const [loading, setLoading] = useState(true)
-    const [modalVisible, setModalVisible] = useState(false)
-    // useEffect(() => {
-    //     fetchMovieDetails(movieId).then(res=>{
-    //             setMovie(res)
-    //             const ses = res.seasons.data
-    //             fetchMovieFiles(movieId,ses[ses.length-1].number)
-    //             .then(obj=>{
-    //                 setFileObj(obj)
-    //         })
-    //     })
-    //     setLoading(false)
-    // }, [movieId])
+    const [loaded, setLoaded] = useState(false)
+
+    useEffect(() => {
+        fetchMovieDetails(adjaraId).then(res=>{
+                setMovie(res)
+                const ses = res.seasons.data
+                fetchMovieFiles(movieId,ses[ses.length-1].number)
+                .then(obj=>{
+                    console.log(obj)
+                    setFileObj(obj)
+                    setLoaded(true)
+            })
+        })
+    }, [movieId])
     return (
         <React.Fragment>
-            <View style={styles.container}>
-                <View style={styles.imageContainer}>
-                    <Text>{movieId}</Text>
-                    <Image 
-                        source={{uri:"https://cdn.wallpapersafari.com/34/82/YRzXPk.jpeg"}}
-                        style={styles.poster}
-                    />
-                <Text>{"Movie TItle Goes Here BitCh fAcK AuTa hEre"}</Text>
+        {loaded&&   
+        (
+            <ScrollView>
+                <View style={styles.container}>
+                    <View style={{flex:1}}>
+                        <MoviePlayer url={fileObj.files[0].files[0].src}/>
+                    </View>
+    
+                    <View style={styles.imageContainer}>
+                        <View >
+                            <Image 
+                                source={{uri:movie.posters.data[240]}}
+                                style={styles.poster}
+                            />
+                        </View>
+                        <View style={{flex:1,justifyContent:'center',backgroundColor:'red'}}>
+                            <Text style={{textAlign:'center'}}>{movie.secondaryName}</Text>
+                        </View>
+                    </View>
+                    <View>
+                        <Text style={{textAlign:'center'}}>
+                            {
+                                movie.plots.data.find(item=>item.language==="ENG").description||
+                                movie.plots.data.find(item=>item.language==="RUS").description||
+                                movie.plots.data.find(item=>item.language==="GEO").description
+                            }
+                        </Text>
+                    </View>
                 </View>
-                <View>
-                <Button onPress={()=>setModalVisible(!modalVisible)} title="click to play movie"/>
-
-                    <Modal
-                        animationType={"slide"}
-                        visible={modalVisible}
-                    >
-                    <Button title="close moadal" onPress={()=>setModalVisible(!modalVisible)}/>
-
-                    <MoviePlayer url={"https://vjs.zencdn.net/v/oceans.mp4"}/>
-
-                    </Modal>
-                </View>
-                <View>
-                    <Text style={{textAlign:'center'}}>{"movie description kook checkmate dismal factual files"}</Text>
-                </View>
-            </View>
+            </ScrollView>
+        )}
         </React.Fragment>
     )
 }
@@ -56,12 +64,13 @@ const styles = StyleSheet.create({
         flex:1
     },
     poster:{
-        width:200,
-        height:300,
-        resizeMode:'stretch'
+        width:150,
+        height:250,
+        resizeMode:'cover'
     },  
     imageContainer:{
         flex:1,
+        flexDirection:'row',
         justifyContent:'center',
         alignItems:'center'
     },
