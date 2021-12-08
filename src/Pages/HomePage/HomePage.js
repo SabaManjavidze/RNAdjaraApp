@@ -9,12 +9,13 @@ import MovieList from '../HomePage/Components/MovieList'
 
 const dimensions = Dimensions.get("screen")
 export default function HomePage({navigation}) {
-    const process=  require("dotenv").config()
+    require("dotenv").config()
     const [Images, setImages] = useState([])
     const [Loading, setLoading] = useState(true)
     const [Movies, setMovies] = useState([])
     const slider_url=`${process.env.API_DOMAIN}/slider`
     const movies_url=`${process.env.API_DOMAIN}/movies`
+    console.log(process.env)
     // const mock_data = [
     //     {url:"https://cdn.wallpapersafari.com/34/82/YRzXPk.jpeg",id:1},
     //     {url:"https://cdn.wallpapersafari.com/34/82/YRzXPk.jpeg",id:2},
