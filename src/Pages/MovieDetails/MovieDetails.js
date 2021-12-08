@@ -9,28 +9,27 @@ export default function MovieDetails({route,navigation}) {
     const [movie, setMovie] = useState({})
     const [loading, setLoading] = useState(true)
     const [modalVisible, setModalVisible] = useState(false)
-    useEffect(() => {
-        fetchMovieDetails(movieId).then(res=>{
-                setMovie(res)
-                const ses = res.seasons.data
-                fetchMovieFiles(movieId,ses[ses.length-1].number)
-                .then(obj=>{
-                    setFileObj(obj)
-            })
-        })
-        setLoading(false)
-    }, [movieId])
+    // useEffect(() => {
+    //     fetchMovieDetails(movieId).then(res=>{
+    //             setMovie(res)
+    //             const ses = res.seasons.data
+    //             fetchMovieFiles(movieId,ses[ses.length-1].number)
+    //             .then(obj=>{
+    //                 setFileObj(obj)
+    //         })
+    //     })
+    //     setLoading(false)
+    // }, [movieId])
     return (
         <React.Fragment>
-{loading?null:    (
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
-                    <Text>{movie.id}</Text>
+                    <Text>{movieId}</Text>
                     <Image 
-                        source={{uri:movie.covers.data[1920]}}
+                        source={{uri:"https://cdn.wallpapersafari.com/34/82/YRzXPk.jpeg"}}
                         style={styles.poster}
                     />
-                <Text>{movie.secondaryName}</Text>
+                <Text>{"Movie TItle Goes Here BitCh fAcK AuTa hEre"}</Text>
                 </View>
                 <View>
                 <Button onPress={()=>setModalVisible(!modalVisible)} title="click to play movie"/>
@@ -41,15 +40,14 @@ export default function MovieDetails({route,navigation}) {
                     >
                     <Button title="close moadal" onPress={()=>setModalVisible(!modalVisible)}/>
 
-                    <MoviePlayer url={fileObj.files[0].files[0].src}/>
+                    <MoviePlayer url={"https://vjs.zencdn.net/v/oceans.mp4"}/>
 
                     </Modal>
                 </View>
                 <View>
-                    <Text style={{textAlign:'center'}}>{movie.plots.data[0].description}</Text>
+                    <Text style={{textAlign:'center'}}>{"movie description kook checkmate dismal factual files"}</Text>
                 </View>
             </View>
-            )}
         </React.Fragment>
     )
 }
