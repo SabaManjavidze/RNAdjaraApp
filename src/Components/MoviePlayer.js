@@ -7,7 +7,6 @@ const dimensions = Dimensions.get("screen")
 export default function MoviePlayer({url}) {
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({isPlaying:"Pause"});
-
   return (
       <View style={styles.container}>
         <Video

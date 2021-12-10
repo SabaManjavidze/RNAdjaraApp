@@ -3,11 +3,15 @@ import { View, Text, Image, Touchable, TouchableOpacity,StyleSheet } from 'react
 
 export default function MovieCard({navigator,url,title,id,adjaraId}) {
     return (
-        <TouchableOpacity onPress={()=>navigator.navigate("MovieDetails",{movieId:{id,adjaraId}})} style={styles.container}>
-            <Image 
-            source={{uri:url}} 
-            style={styles.image}/>
-            <Text style={styles.text}>{title}</Text>
+        <TouchableOpacity 
+            onPress={
+                ()=>{navigator.navigate("MovieDetails",{movie_id:id,adjara_id:adjaraId})}
+                } 
+            style={styles.container}>
+                <Image 
+                source={{uri:url}} 
+                style={styles.image}/>
+                <Text style={styles.text}>{title}</Text>
         </TouchableOpacity>
     )
 

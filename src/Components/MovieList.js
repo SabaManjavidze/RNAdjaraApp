@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { View, Text, Image, FlatList, ScrollView, StyleSheet } from 'react-native'
-import MovieCard from '../../../Components/MovieCard'
+import MovieCard from './MovieCard'
 export default function MovieList({navigation,title,data}) {
     const renderItem = ({item}) =>{
         const img_url = item.covers.data[1920]

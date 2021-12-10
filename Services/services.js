@@ -14,7 +14,7 @@ export const fetchMovieFiles = async (movieId,sesNum) =>{
     try {
         const res = await fetch(url)
         const json = await res.json()
-        return json[0]
+        return json
     } catch (error) {
         console.log(error)            
     }

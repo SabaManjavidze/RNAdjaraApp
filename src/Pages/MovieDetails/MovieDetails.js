@@ -1,28 +1,40 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image,ScrollView,Dimensions, StyleSheet, Button, Modal } from 'react-native'
-import { fetchMovieDetails,fetchMovieFiles } from '../../../Services/services'
-import MoviePlayer from '../../Components/MoviePlayer'
+import { View, Text, Image,ScrollView,Dimensions, StyleSheet, Button, TouchableOpacity } from 'react-native'
+import { fetchMovieDetails } from '../../../services/services'
+import 'intl';
+import 'intl/locale-data/jsonp/en';
+import SeasonList from '../../Components/SeasonList';
 
 const dimensions = Dimensions.get("screen")
 
 export default function MovieDetails({route,navigation}) {
-    const {adjaraId,movieId} = route.params.movieId
-    const [fileObj, setFileObj] = useState()
+    const movieId = route.params.movie_id
+    const adjaraId = route.params.adjara_id
     const [movie, setMovie] = useState({})
+    const [desc, setDesc] = useState("No Description")
     const [loaded, setLoaded] = useState(false)
-
+    const [visible, setvisible] = useState(false)
+    
     useEffect(() => {
         fetchMovieDetails(adjaraId).then(res=>{
-                setMovie(res)
-                const ses = res.seasons.data
-                fetchMovieFiles(movieId,ses[ses.length-1].number)
-                .then(obj=>{
-                    console.log(obj)
-                    setFileObj(obj)
-                    setLoaded(true)
-            })
+            navigation.setOptions({title:res.secondaryName})
+            setMovie(res)
+            setLoaded(true)
         })
     }, [movieId])
+
+    useEffect(() => {
+        loaded&&getDescription()
+    }, [loaded])
+
+    const getDescription = () =>{
+        movie.plots.data.map(child=>{
+            if(child.language=="ENG"){
+                setDesc(child.description)
+            }
+        })
+    }
+
     return (
         <React.Fragment>
         {loaded&&   
@@ -30,29 +42,56 @@ export default function MovieDetails({route,navigation}) {
             <ScrollView>
                 <View style={styles.container}>
                     <View style={{flex:1}}>
-                        <MoviePlayer url={fileObj.files[0].files[0].src}/>
+                        
+                        {/* <MoviePlayer url={fileObj[0].files[0].files[0].src}/> */}
                     </View>
-    
-                    <View style={styles.imageContainer}>
-                        <View >
+                    <View style={styles.episodesContainer}>
+                        {movie.isTvShow&& <SeasonList
+                                            movieId={movieId}
+                                            error_img={movie.covers.data[1920]}
+                                            data={movie.seasons.data}
+                                            />
+                        }
+                    </View>
+
+                    <View style={styles.detailsContainer}>
+                        <View>
                             <Image 
                                 source={{uri:movie.posters.data[240]}}
                                 style={styles.poster}
                             />
                         </View>
-                        <View style={{flex:1,justifyContent:'center',backgroundColor:'red'}}>
-                            <Text style={{textAlign:'center'}}>{movie.secondaryName}</Text>
+                        <View style={styles.infoContainer}>
+                            <View style={{flex:1}}>
+                                <Text style={{textAlign:'center',fontSize:30}}>{movie.secondaryName}</Text>
+                            </View>
+                            <View style={{flex:1}}>
+                                <Text style={{textAlign:'center',color:'rgb(66, 66, 66)'}}>
+                                    Release Date : {movie.releaseDate}
+                                    {"\n"}
+                                    Views : {new Intl.NumberFormat("us-IN").format(movie.watchCount)}
+                                    {"\n"}
+                                    {"\n"}
+                                    Genres : {
+                                                movie.genres.data.length>1
+                                                ?
+                                                movie.genres.data.map(child=>child.secondaryName+", ")
+                                                :
+                                                movie.genres.data[0].secondaryName
+                                            }
+                                </Text>
+                            </View>
                         </View>
                     </View>
-                    <View>
-                        <Text style={{textAlign:'center'}}>
+
+                    <View style={styles.descriptionContainer}>
+                        <Text style={{textAlign:'center',marginTop:20}}>
                             {
-                                movie.plots.data.find(item=>item.language==="ENG").description||
-                                movie.plots.data.find(item=>item.language==="RUS").description||
-                                movie.plots.data.find(item=>item.language==="GEO").description
+                                desc
                             }
                         </Text>
                     </View>
+
                 </View>
             </ScrollView>
         )}
@@ -63,12 +102,19 @@ const styles = StyleSheet.create({
     container:{
         flex:1
     },
+    infoContainer:{
+        flex:1,
+        justifyContent:'center',
+    },
     poster:{
         width:150,
         height:250,
         resizeMode:'cover'
     },  
-    imageContainer:{
+    descriptionContainer:{
+
+    },
+    detailsContainer:{
         flex:1,
         flexDirection:'row',
         justifyContent:'center',
