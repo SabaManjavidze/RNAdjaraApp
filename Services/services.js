@@ -1,5 +1,8 @@
 const boiler = "http://10.0.2.2:4000/"
 
+
+
+
 export const fetchData = async (url,setData) =>{
     try {
         const res = await fetch(url)

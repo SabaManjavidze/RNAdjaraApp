@@ -6,19 +6,21 @@ export default function SeasonCard({movieId,error_img,num}) {
     const [visible, setvisible] = useState(false)
     console.log(movieId)
     return (
-        <TouchableOpacity onPress={()=>setvisible(!visible)}>
-            <View style={styles.container}>
-                <Text style={styles.text}>Season {num}</Text>
-            </View>
-            <View>
-                {visible&&<EpisodeList 
-                            error_img={error_img} 
-                            seasonNum={num} 
-                            movieId={movieId}
-                            seasonNum={num}
-                            />}
-            </View>
-        </TouchableOpacity>
+        <View>
+            <TouchableOpacity onPress={()=>setvisible(!visible)}>
+                <View style={styles.container}>
+                    <Text style={styles.text}>Season {num}</Text>
+                </View>
+            </TouchableOpacity>
+                <View>
+                    {visible&&<EpisodeList 
+                                error_img={error_img} 
+                                seasonNum={num} 
+                                movieId={movieId}
+                                seasonNum={num}
+                                />}
+                </View>
+        </View>
     )
 
 }

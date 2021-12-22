@@ -3,6 +3,7 @@ import { View, Text, Image,ScrollView,Dimensions, StyleSheet, Button, TouchableO
 import { fetchMovieDetails } from '../../../services/services'
 import 'intl';
 import 'intl/locale-data/jsonp/en';
+import MoviePlayer from "../../Components/MoviePlayer"
 import SeasonList from '../../Components/SeasonList';
 
 const dimensions = Dimensions.get("screen")
@@ -10,19 +11,28 @@ const dimensions = Dimensions.get("screen")
 export default function MovieDetails({route,navigation}) {
     const movieId = route.params.movie_id
     const adjaraId = route.params.adjara_id
+    const [fileObj, setfileObj] = useState()
     const [movie, setMovie] = useState({})
     const [desc, setDesc] = useState("No Description")
     const [loaded, setLoaded] = useState(false)
     const [visible, setvisible] = useState(false)
     
     useEffect(() => {
-        fetchMovieDetails(adjaraId).then(res=>{
+        fetchMovieDetails(adjaraId).then(async (res)=>{
+            if(!res.isTvShow){
+                const data = await fetchMovieFile()
+                setfileObj(data)
+            }
             navigation.setOptions({title:res.secondaryName})
             setMovie(res)
             setLoaded(true)
         })
     }, [movieId])
-
+    const fetchMovieFile = async() =>{
+        const res = await fetch(`http://10.0.2.2:4000/movie-files/${movieId}/1`)
+        const json = await res.json()
+        return json
+    }
     useEffect(() => {
         loaded&&getDescription()
     }, [loaded])
@@ -37,13 +47,13 @@ export default function MovieDetails({route,navigation}) {
 
     return (
         <React.Fragment>
-        {loaded&&   
+        {loaded &&   
         (
             <ScrollView>
                 <View style={styles.container}>
                     <View style={{flex:1}}>
                         
-                        {/* <MoviePlayer url={fileObj[0].files[0].files[0].src}/> */}
+                        <MoviePlayer url={fileObj[0].files[0].files[0].src}/>
                     </View>
                     <View style={styles.episodesContainer}>
                         {movie.isTvShow&& <SeasonList
@@ -75,7 +85,9 @@ export default function MovieDetails({route,navigation}) {
                                     Genres : {
                                                 movie.genres.data.length>1
                                                 ?
-                                                movie.genres.data.map(child=>child.secondaryName+", ")
+                                                movie.genres.data.map(child=>{
+                                                    child.secondaryName+", "
+                                                })
                                                 :
                                                 movie.genres.data[0].secondaryName
                                             }

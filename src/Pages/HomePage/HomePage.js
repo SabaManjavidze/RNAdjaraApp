@@ -21,7 +21,6 @@ export default function HomePage({navigation}) {
             fetchMovieImages(slider_url,setImages)
             fetchData(movies_url,setMovies)
             fetchData(shows_url,setTVShows)
-            
         } catch (error) {
             console.log(error)
         }finally{
