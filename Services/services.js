@@ -1,13 +1,13 @@
-const boiler = "http://10.0.2.2:4000/"
+export const boiler = "https://adjara-express-api.herokuapp.com"
 
 
 
 
-export const fetchData = async (url,setData) =>{
+export const fetchData = async (url) =>{
     try {
         const res = await fetch(url)
         const json = await res.json()
-        setData(json)
+        return json
     } catch (error) {
         console.log(error)            
     }
@@ -23,7 +23,7 @@ export const fetchMovieFiles = async (movieId,sesNum) =>{
     }
 }
 export const fetchMovieDetails = async (movieId) =>{
-    const url = `${boiler}movie/${movieId}`;
+    const url = `${boiler}/movie/${movieId}`;
     try {
         const res = await fetch(url)
         const json = await res.json()
@@ -32,13 +32,13 @@ export const fetchMovieDetails = async (movieId) =>{
         console.log(error)            
     }
 }
-export const fetchMovieImages = async (url,setImages) =>{
+export const fetchMovieImages = async (url) =>{
     try {
         const res = await fetch(url)
         const json = await res.json()
         const images = []
         json.map(child=>images.push(child.covers.data[1920]))
-        setImages(images)
+        return images
     } catch (error) {
         console.log(error)            
     }

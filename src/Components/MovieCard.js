@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { View, Text, Image, Touchable, TouchableOpacity,StyleSheet } from 'react-native'
 
 export default function MovieCard({navigator,url,title,id,adjaraId}) {
+
     return (
         <TouchableOpacity 
             onPress={

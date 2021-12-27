@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image,ScrollView,Dimensions, StyleSheet, Button, TouchableOpacity } from 'react-native'
-import { fetchMovieDetails } from '../../../services/services'
+import { fetchMovieDetails,boiler } from '../../../services/services'
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 import MoviePlayer from "../../Components/MoviePlayer"
@@ -16,7 +16,12 @@ export default function MovieDetails({route,navigation}) {
     const [desc, setDesc] = useState("No Description")
     const [loaded, setLoaded] = useState(false)
     const [visible, setvisible] = useState(false)
-    
+
+    const fetchMovieFile = async() =>{
+        const res = await fetch(`${boiler}/moviefiles/${movieId}/1`)
+        const json = await res.json()
+        return json
+    }
     useEffect(() => {
         fetchMovieDetails(adjaraId).then(async (res)=>{
             if(!res.isTvShow){
@@ -27,12 +32,8 @@ export default function MovieDetails({route,navigation}) {
             setMovie(res)
             setLoaded(true)
         })
-    }, [movieId])
-    const fetchMovieFile = async() =>{
-        const res = await fetch(`http://10.0.2.2:4000/movie-files/${movieId}/1`)
-        const json = await res.json()
-        return json
-    }
+    }, [])
+
     useEffect(() => {
         loaded&&getDescription()
     }, [loaded])
@@ -56,11 +57,14 @@ export default function MovieDetails({route,navigation}) {
                         <MoviePlayer url={fileObj[0].files[0].files[0].src}/>
                     </View>
                     <View style={styles.episodesContainer}>
-                        {movie.isTvShow&& <SeasonList
-                                            movieId={movieId}
-                                            error_img={movie.covers.data[1920]}
-                                            data={movie.seasons.data}
-                                            />
+                        {
+                        movie.isTvShow
+                        && 
+                        <SeasonList
+                            movieId={movieId}
+                            error_img={movie.covers.data[1920]}
+                            data={movie.seasons.data}
+                        />
                         }
                     </View>
 
